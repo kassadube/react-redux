@@ -2,7 +2,6 @@ import { applyMiddleware, createStore } from "redux"
 import axios from "axios";
 import logger from "redux-logger"
 import thunk from "redux-thunk"
-import promise from "redux-promise-middleware";
 
 
 const initialState = {
@@ -14,13 +13,13 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "FETCH_USERS_PENDING":
+    case "FETCH_USERS_START":
       return { ...state, fetching: true };
       break;
-    case "FETCH_USERS_FULFILLED":
+    case "RECIVE_USERS":
       return { ...state, feched: true, users: action.payload };
       break;
-    case "FETCH_USERS_REJECTED":
+    case "FETCH_USERS_ERR":
       return { ...state, fetching: false, error: action.payload };
       break;
   }
@@ -29,24 +28,16 @@ const reducer = (state = initialState, action) => {
 
 
 
-const middleware = applyMiddleware(promise(),thunk, logger());
+const middleware = applyMiddleware(thunk, logger());
 
 const store = createStore(reducer, middleware);
 
 /*
-REPLACED BY LOGGER
 store.subscribe(() => {
   console.log("Store changed", store.getState());
 })
 */
-store.dispatch({
-  type :"FETCH_USERS",
-  payload :axios.get("http://rest.learncode.academy/api/wstern/users")
-  
-});
 
-
-/*
 store.dispatch((dispatch) => {
   dispatch({ type: "FETCH_USERS_START" });
   axios.get("http://rest.learncode.academy/api/wstern/users")
@@ -58,4 +49,4 @@ store.dispatch((dispatch) => {
     })
 
 }
-);*/
+);
